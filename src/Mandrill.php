@@ -56,7 +56,7 @@ class Mandrill extends Module
         $time = new \DateTime('now', new \DateTimeZone($this->config['timezone']));
         $time->setTimezone(new \DateTimeZone('UTC'));
         $fixedTime = new \DateTimeImmutable($time->format('Y-m-d H:i:s'));
-        $now = $fixedTime->format('U');
+        $now = $fixedTime->add(new \DateInterval('PT5M'))->format('U');
         $minutesAgo = $fixedTime->sub(new \DateInterval('PT' . $minutes . 'M'))->format('U');
         if ($subject) {
             $query .= 'subject:"*' . $subject . '*" ';

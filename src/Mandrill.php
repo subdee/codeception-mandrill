@@ -21,7 +21,7 @@ class Mandrill extends Module
     /**
      * @var array
      */
-    protected $config = ['api_key' => null];
+    protected $config = ['api_key' => null, 'timezone' => 'UTC'];
 
     /**
      * @var array
@@ -53,11 +53,15 @@ class Mandrill extends Module
     protected function searchForEmail($subject = null, $minutes = 1)
     {
         $query = '';
-        $now = time();
+        $time = new \DateTime('now');
+        $time->setTimezone(new \DateTimeZone($this->config['timezone']));
+        $fixedTime = new \DateTimeImmutable($time->format('Y-m-d H:i:s'));
+        $now = $fixedTime->format('U');
+        $minutesAgo = $fixedTime->sub(new \DateInterval('PT' . $minutes . 'M'))->format('U');
         if ($subject) {
             $query .= 'subject:"*' . $subject . '*" ';
         }
-        $query .= 'ts:[' . ($now - ($minutes * 60)) . ' TO ' . $now . ']';
+        $query .= 'ts:[' . $minutesAgo . ' TO ' . $now . ']';
         Debug::debug('Searching mandrill with query string: ' . $query);
         $messages = $this->client->messages->search($query);
         if (isset($messages[0])) {

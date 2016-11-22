@@ -53,8 +53,8 @@ class Mandrill extends Module
     protected function searchForEmail($subject = null, $minutes = 1)
     {
         $query = '';
-        $time = new \DateTime('now');
-        $time->setTimezone(new \DateTimeZone($this->config['timezone']));
+        $time = new \DateTime('now', new \DateTimeZone($this->config['timezone']));
+        $time->setTimezone(new \DateTimeZone('UTC'));
         $fixedTime = new \DateTimeImmutable($time->format('Y-m-d H:i:s'));
         $now = $fixedTime->format('U');
         $minutesAgo = $fixedTime->sub(new \DateInterval('PT' . $minutes . 'M'))->format('U');

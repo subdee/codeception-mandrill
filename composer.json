@@ -1,0 +1,23 @@
+{
+  "name": "subdee/codeception-mandrill",
+  "description": "Mandrill module for Codeception",
+  "keywords": ["codeception", "mandrill"],
+  "type":"library",
+  "license":"MIT",
+  "authors": [
+    {
+      "name": "Kostas Thermos",
+      "email": "info@subdee.org"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "codeception/codeception": "*",
+    "mandrill/mandrill": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Codeception\\Module\\": "src"
+    }
+  }
+}

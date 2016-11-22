@@ -2,6 +2,7 @@
 namespace Codeception\Module;
 
 use Codeception\Module;
+use Codeception\Util\Debug;
 
 /**
  * This module allows you to test emails sent to Mandrill
@@ -57,6 +58,7 @@ class Mandrill extends Module
             $query .= 'subject:"*' . $subject . '*" ';
         }
         $query .= 'ts:[' . $now - ($minutes * 60) . ' TO ' . $now . ']';
+        Debug::debug('Searching mandrill with query string: ' . $query);
         $messages = $this->client->messages->search($query);
         if (isset($messages[0])) {
             return $messages[0]['_id'];
@@ -71,6 +73,7 @@ class Mandrill extends Module
      */
     protected function getEmailContent($id)
     {
+        Debug::debug('Getting email content for email id: ' . $id);
         $content = $this->client->messages->content($id);
         return $content['html'];
     }

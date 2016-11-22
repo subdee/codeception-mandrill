@@ -57,7 +57,7 @@ class Mandrill extends Module
         if ($subject) {
             $query .= 'subject:"*' . $subject . '*" ';
         }
-        $query .= 'ts:[' . $now - ($minutes * 60) . ' TO ' . $now . ']';
+        $query .= 'ts:[' . ($now - ($minutes * 60)) . ' TO ' . $now . ']';
         Debug::debug('Searching mandrill with query string: ' . $query);
         $messages = $this->client->messages->search($query);
         if (isset($messages[0])) {

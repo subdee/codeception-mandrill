@@ -45,7 +45,28 @@ class Mandrill extends Module
     }
 
     /**
-     * @param $id string
+     * @param null $subject
+     * @param int $minutes
+     * @return string|null
+     */
+    protected function searchForEmail($subject = null, $minutes = 1)
+    {
+        $query = '';
+        $now = time();
+        if ($subject) {
+            $query .= 'subject:"*' . $subject . '*" ';
+        }
+        $query .= 'ts:[' . $now - ($minutes * 60) . ' TO ' . $now . ']';
+        $messages = $this->client->messages->search($query);
+        if (isset($messages[0])) {
+            return $messages[0]['_id'];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $id
      * @return string
      */
     protected function getEmailContent($id)
@@ -55,11 +76,22 @@ class Mandrill extends Module
     }
 
     /**
-     * @param $expected string
+     * @param string $expected
      */
-    public function seeInEmailBody($expected)
+    public function seeInLatestEmailBody($expected)
     {
         $content = $this->getEmailContent($this->getLatestEmailId());
+        $this->assertContains($expected, $content);
+    }
+
+    /**
+     * @param string $expected
+     * @param string $subject
+     * @param int $lastMinutes
+     */
+    public function seeInEmailBody($expected, $subject, $lastMinutes = 1)
+    {
+        $content = $this->getEmailContent($this->searchForEmail($subject, $lastMinutes));
         $this->assertContains($expected, $content);
     }
 }
